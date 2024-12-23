@@ -17,64 +17,98 @@
    <widget class="QPushButton" name="btn_inlog">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>190</y>
-      <width>91</width>
-      <height>31</height>
+      <x>110</x>
+      <y>140</y>
+      <width>61</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
      <string>开始游戏</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QPushButton" name="but_reg">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>190</x>
       <y>140</y>
-      <width>113</width>
-      <height>20</height>
+      <width>61</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string/>
+     <string>注册账户</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
+   <widget class="QPushButton" name="but_quit">
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>90</y>
-      <width>113</width>
-      <height>20</height>
+      <x>270</x>
+      <y>140</y>
+      <width>61</width>
+      <height>21</height>
      </rect>
     </property>
+    <property name="text">
+     <string>退出</string>
+    </property>
    </widget>
-   <widget class="QLabel" name="label">
+   <widget class="QRadioButton" name="radioButton">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>90</y>
-      <width>71</width>
+      <x>300</x>
+      <y>100</y>
+      <width>61</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>输入用户名</string>
+     <string>显示</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_2">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>142</y>
-      <width>51</width>
-      <height>20</height>
+      <x>140</x>
+      <y>60</y>
+      <width>154</width>
+      <height>56</height>
      </rect>
     </property>
-    <property name="text">
-     <string>输入邮箱</string>
-    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>用户名</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="let_name">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>密  码</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="let_passwd"/>
+       </item>
+      </layout>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

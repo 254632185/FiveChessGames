@@ -20,14 +20,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainwindow.cpp\
-    chessgame.cpp
+    chessgame.cpp \
+    regis.cpp
 
 HEADERS += \
     mainwindow.h\
-    chessgame.h \
+    chessgame.h \ \
+    regis.h
 
 FORMS += \
-    mainwindow.ui
+    chessgame.ui \
+    mainwindow.ui \
+    regis.ui
     chessgame.ui
 
 # Default rules for deployment.

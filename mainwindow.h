@@ -1,4 +1,5 @@
-/*#ifndef MAINWINDOW_H
+
+#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -24,8 +25,16 @@ private slots:
 
     void on_btn_inlog_clicked();
 
+    void on_but_reg_clicked();
+
+    void on_but_quit_clicked();
+
+    void on_radioButton_clicked();
+
+    void on_radioButton_clicked(bool checked);
+
 private:
     Ui::MainWindow *ui;
 };
 
-#endif // MAINWINDOW_H*/
+#endif // MAINWINDOW_H
