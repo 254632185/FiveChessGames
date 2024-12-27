@@ -1,4 +1,5 @@
 
+
 #ifndef CHESSGAME_H
 #define CHESSGAME_H
 
@@ -17,6 +18,9 @@
 #include <QPalette>
 #include <QLabel>
 #include <QButtonGroup>
+
+#include <QMediaPlayer>
+#include <QMediaPlaylist>
 
 #include <bits/stdc++.h>  // stack
 using namespace std;
@@ -44,7 +48,8 @@ signals:
 private slots:
     void GameOper();
     void SelectPlayer();
-    void SelectRadio(); // 添加 SelectRadio 槽函数声明
+    void SelectRadio();
+    void toggleAllMusic();
 
 private:
     // 定义二维数组，用来存储棋盘的状态
@@ -105,6 +110,18 @@ private:
 
     // 玩家下棋（处理鼠标按压事件）
     void mousePressEvent(QMouseEvent *e);
+
+    // 音频播放器
+    QMediaPlayer *mediaPlayer;
+    QMediaPlayer *winSound;
+    QMediaPlayer *blackMoveSound;
+    QMediaPlayer *whiteMoveSound;
+
+    bool isAllMusicPlaying; // 追踪所有音乐的播放状态
+    QPushButton *musicButton; // 音乐开关按钮
+
+    bool hasWinner;
+
 private:
     Ui::ChessGame *ui;
 };

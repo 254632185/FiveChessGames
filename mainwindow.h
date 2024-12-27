@@ -1,4 +1,3 @@
-
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -21,7 +20,6 @@ public:
 
 
 private slots:
-    void on_pbt1_clicked();
 
     void on_btn_inlog_clicked();
 
@@ -29,9 +27,8 @@ private slots:
 
     void on_but_quit_clicked();
 
-    void on_radioButton_clicked();
-
     void on_radioButton_clicked(bool checked);
+
 
 private:
     Ui::MainWindow *ui;

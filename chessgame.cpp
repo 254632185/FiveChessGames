@@ -1,13 +1,20 @@
 #include "chessgame.h"
-#include "ui_chessgame.h"
 #include "mainwindow.h"
 #include<QPushButton>
 
+#include <QPixmap>
+#include <QPalette>
+#include <QPainter>
+#include <QMouseEvent>
+#include <QButtonGroup>
+#include <QRadioButton>
+#include <QMessageBox>
+#include <QMediaPlayer>
+#include <QMediaPlaylist>
+
 ChessGame::ChessGame(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::ChessGame)
+    : QMainWindow(parent),isAllMusicPlaying(true), hasWinner(false)
 {
-    ui->setupUi(this);
 
     // 设置游戏窗口标题名称
     setWindowTitle("五子棋游戏");
@@ -18,10 +25,18 @@ ChessGame::ChessGame(QWidget *parent)
 
     // 设置游戏背景图片
     QPixmap background(":/new/prefix1/images/8d732e1e83e0d423821f95019b109392.jpg"); // 创建一个QPixmap对象并加载图片
+    if (background.isNull()) {
+        qWarning() << "Failed to load background image";
+        return;
+        }
+
+    // 缩放图片以适应窗口大小，并保持纵横比
+    background = background.scaled(size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 
     QPalette palette; // 创建palette对象，并且将背景图片设置为窗口背景
-    palette.setBrush(QPalette::Background, background);
+    palette.setBrush(QPalette::Window, background);
     this->setPalette(palette);
+
 
     // 展示游戏UI信息
     QPushButton *button_mode = new QPushButton(this);
@@ -52,7 +67,7 @@ ChessGame::ChessGame(QWidget *parent)
 
     Play1->setChecked(true);
 
-    // 实现游戏开始/游戏结束  按钮
+    // 实现游戏开始/游戏结束按钮
     flag = 0;
     button = new QPushButton(this);
     button->setStyleSheet("font:Bold;font-size:36px;color:white;background-color: rgb(30, 144, 255);border:2px ;border-radius:10px;padding:2px 4px;");
@@ -65,6 +80,34 @@ ChessGame::ChessGame(QWidget *parent)
     lock = true;
     memset(chessboard, 0, sizeof(chessboard));
 
+
+    // 创建并初始化媒体播放器实例
+    mediaPlayer = new QMediaPlayer(this);
+    winSound = new QMediaPlayer(this);
+    blackMoveSound = new QMediaPlayer(this);
+    whiteMoveSound = new QMediaPlayer(this);
+
+    // 加载音频文件
+    mediaPlayer->setMedia(QUrl("qrc:/new/prefix1/images/yuzgouchangwan.mp3"));
+    winSound->setMedia(QUrl("qrc:/new/prefix1/images/sound.mp3"));
+    blackMoveSound->setMedia(QUrl("qrc:/new/prefix1/images/black_move.mp3"));
+    whiteMoveSound->setMedia(QUrl("qrc:/new/prefix1/images/white_move.mp3"));
+
+    // 自动播放背景音乐
+    if (isAllMusicPlaying) {
+        mediaPlayer->play();
+        if (mediaPlayer->state() != QMediaPlayer::PlayingState) {
+            qDebug() << "Background music not playing, state:" << mediaPlayer->state();
+        }
+    }
+
+    // 创建音乐开关按钮
+    musicButton = new QPushButton(this);
+    musicButton->setStyleSheet("font:Bold;font-size:36px;color:white;background-color: rgb(30, 144, 255);border:2px ;border-radius:10px;padding:2px 4px;");
+    musicButton->setGeometry(QRect(785, 500, 200, 50));
+    musicButton->setText("关闭音乐");
+    // 连接音乐开关按钮点击事件到槽函数
+    connect(musicButton, &QPushButton::clicked, this, &ChessGame::toggleAllMusic);
 }
 
 ChessGame::~ChessGame()
@@ -80,12 +123,44 @@ void ChessGame::update_chessboard(int x, int y)
         chessboard[x][y] = player;  // 切换棋子颜色操作
         currentX = x;
         currentY = y;
-        QPoint pxy(x, y);
         update();
 
-        // 该函数用来检查当前落子之后是否有玩家获胜
+        // 检查是否有玩家获胜
         Is_Someone_Winner(x, y);
+
+        if (!hasWinner && isAllMusicPlaying) {
+            if (player == 1) { // 黑棋
+                blackMoveSound->play();
+            } else { // 白棋
+                whiteMoveSound->play();
+            }
+        }
+
         player = (player % 2) + 1; // 切换玩家
+    }
+}
+
+// 检测是否有玩家获胜
+void ChessGame::Is_Someone_Winner(int x, int y)
+{
+    QPoint ps(x, y);
+    if (isWinner(ps)) {
+        lock = true;
+        hasWinner = true; // 设置胜利标志
+
+        if (game_type == 1) {
+            if (chessboard[x][y] == 1)
+                strWinner = "BLACK";
+            else
+                strWinner = "WHITE";
+        }
+
+        // 播放胜利音效
+        if (isAllMusicPlaying) {
+            winSound->play();
+        }
+
+        QMessageBox::information(NULL, "退出", strWinner + "战胜，请继续努力！", QMessageBox::Ok);
     }
 }
 
@@ -106,21 +181,6 @@ int ChessGame::getPointAt(QPoint p, int dir, int offset)
     return chessboard[x][y];
 }
 
-// 检测是否有玩家获胜
-void ChessGame::Is_Someone_Winner(int x, int y)
-{
-    QPoint ps(x, y);
-    if (isWinner(ps)) {
-        lock = true;
-        if (game_type == 1) {
-            if (chessboard[x][y] == 1)
-                strWinner = "BLACK";
-            else
-                strWinner = "WHITE";
-        }
-        QMessageBox::information(NULL, "退出", strWinner + "战胜，请继续努力！", QMessageBox::Ok);
-    }
-}
 
 // 判断指定位置是否形成五子连珠
 int ChessGame::isWinner(QPoint p)
@@ -136,7 +196,6 @@ int ChessGame::isWinner(QPoint p)
             dir_cnt[i]++;
         }
     }
-
 
     for (int i = 0; i < 4; i++) {
         if (dir_cnt[i] + dir_cnt[i + 4] + 1 >= 5) {
@@ -165,7 +224,6 @@ void ChessGame::PERSON_time(QMouseEvent *e)
 void ChessGame::paintEvent(QPaintEvent *e)
 {
     QPainter pt(this);
-
     // 调用此接口来设置绘制图时的渲染操作
     pt.setRenderHint(QPainter::Antialiasing, true);
 
@@ -250,7 +308,6 @@ void ChessGame::mouseMoveEvent(QMouseEvent *e) // OK
     update();
 }
 
-
 // 玩家下棋（处理鼠标按压事件）
 void ChessGame::mousePressEvent(QMouseEvent *e)
 {
@@ -284,6 +341,9 @@ void ChessGame::GameOper()
         lock = true;
         memset(chessboard, 0, sizeof(chessboard));
         update();
+
+        // 停止背景音乐
+        mediaPlayer->stop();
     }
 
     flag = !flag;
@@ -308,4 +368,24 @@ void ChessGame::SelectPlayer()
 void ChessGame::SelectRadio()
 {
     SelectPlayer();
+}
+
+void ChessGame::toggleAllMusic()
+{
+    qDebug() << "Toggling all music, current state:" << isAllMusicPlaying;
+
+    if (isAllMusicPlaying) {
+        mediaPlayer->pause();
+        winSound->pause();
+        blackMoveSound->pause();
+        whiteMoveSound->pause();
+        isAllMusicPlaying = false;
+        musicButton->setText("开启音乐");
+    } else {
+        mediaPlayer->play();
+        isAllMusicPlaying = true;
+        musicButton->setText("关闭音乐");
+    }
+
+    qDebug() << "After toggle, media player state:" << mediaPlayer->state();
 }

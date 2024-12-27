@@ -1,6 +1,7 @@
 QT       += core gui
 
-QT += multimedia
+QT += multimedia multimediawidgets
+
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -24,14 +25,13 @@ SOURCES += \
     regis.cpp
 
 HEADERS += \
-    mainwindow.h\
-    chessgame.h \ \
+    mainwindow.h \
+    chessgame.h \
     regis.h
 
 FORMS += \
-    chessgame.ui \
     mainwindow.ui \
-    regis.ui
+    regis.ui \
     chessgame.ui
 
 # Default rules for deployment.
