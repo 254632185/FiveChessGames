@@ -24,7 +24,7 @@ ChessGame::ChessGame(QWidget *parent)
     setMaximumSize(1000, 800);
 
     // 设置游戏背景图片
-    QPixmap background(":/new/prefix1/images/8d732e1e83e0d423821f95019b109392.jpg"); // 创建一个QPixmap对象并加载图片
+    QPixmap background(":/new/prefix1/images/8d732e1e83e0d423821f95019b109392.jpg");
     if (background.isNull()) {
         qWarning() << "Failed to load background image";
         return;
